@@ -5,8 +5,8 @@ import {
 } from "react-router-dom";
 
 
-
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
@@ -60,55 +60,34 @@ export default function App(){
                 ====================== */}
 
 
-
                 <Route
-
                     path="/"
-
                     element={<Home />}
-
                 />
 
 
-
                 <Route
-
                     path="/products"
-
                     element={<Products />}
-
                 />
 
 
-
                 <Route
-
                     path="/cart"
-
                     element={<Cart />}
-
                 />
 
 
-
                 <Route
-
                     path="/login"
-
                     element={<Login />}
-
                 />
-
 
 
                 <Route
-
                     path="/register"
-
                     element={<Register />}
-
                 />
-
 
 
 
@@ -118,15 +97,21 @@ export default function App(){
                 ====================== */}
 
 
-
                 <Route
 
                     path="/checkout"
 
-                    element={<Checkout />}
+                    element={
+
+                        <ProtectedRoute>
+
+                            <Checkout />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
-
 
 
 
@@ -144,7 +129,15 @@ export default function App(){
 
                     path="/orders"
 
-                    element={<Orders />}
+                    element={
+
+                        <ProtectedRoute>
+
+                            <Orders />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -154,7 +147,15 @@ export default function App(){
 
                     path="/my-orders"
 
-                    element={<MyOrders />}
+                    element={
+
+                        <ProtectedRoute>
+
+                            <MyOrders />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -177,7 +178,15 @@ export default function App(){
 
                     path="/admin/dashboard"
 
-                    element={<AdminDashboard />}
+                    element={
+
+                        <ProtectedRoute role="admin">
+
+                            <AdminDashboard />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -189,7 +198,15 @@ export default function App(){
 
                     path="/admin/orders"
 
-                    element={<AdminOrders />}
+                    element={
+
+                        <ProtectedRoute role="admin">
+
+                            <AdminOrders />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -201,7 +218,15 @@ export default function App(){
 
                     path="/admin/orders/:id"
 
-                    element={<AdminOrderDetails />}
+                    element={
+
+                        <ProtectedRoute role="admin">
+
+                            <AdminOrderDetails />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -213,7 +238,15 @@ export default function App(){
 
                     path="/admin/stock"
 
-                    element={<AdminStock />}
+                    element={
+
+                        <ProtectedRoute role="admin">
+
+                            <AdminStock />
+
+                        </ProtectedRoute>
+
+                    }
 
                 />
 
@@ -237,7 +270,6 @@ export default function App(){
 
                     element={
 
-
                         <div
 
                             style={{
@@ -257,7 +289,6 @@ export default function App(){
 
                         </div>
 
-
                     }
 
                 />
@@ -265,7 +296,6 @@ export default function App(){
 
 
             </Routes>
-
 
 
         </BrowserRouter>

@@ -33,6 +33,8 @@ export default function AdminOrderDetails() {
 
 
 
+
+
     const loadOrder = async () => {
 
 
@@ -63,6 +65,7 @@ export default function AdminOrderDetails() {
 
 
 
+
             try {
 
 
@@ -80,13 +83,11 @@ export default function AdminOrderDetails() {
                 );
 
 
-            } catch(error) {
+            } catch (error) {
 
 
                 console.log(
-
                     "History not available"
-
                 );
 
 
@@ -97,7 +98,8 @@ export default function AdminOrderDetails() {
 
 
 
-        } catch(error) {
+
+        } catch (error) {
 
 
             console.error(
@@ -161,12 +163,12 @@ export default function AdminOrderDetails() {
 
 
 
-    if(loading){
+    if (loading) {
 
 
         return (
 
-            <div style={{padding:"30px"}}>
+            <div style={{ padding: "30px" }}>
 
                 <h2>
                     Loading order...
@@ -186,12 +188,12 @@ export default function AdminOrderDetails() {
 
 
 
-    if(error){
+    if (error) {
 
 
         return (
 
-            <div style={{padding:"30px"}}>
+            <div style={{ padding: "30px" }}>
 
 
                 <button
@@ -219,8 +221,9 @@ export default function AdminOrderDetails() {
 
         );
 
-
     }
+
+
 
 
 
@@ -237,12 +240,11 @@ export default function AdminOrderDetails() {
 
             style={{
 
-                padding:"30px"
+                padding: "30px"
 
             }}
 
         >
-
 
 
 
@@ -281,17 +283,18 @@ export default function AdminOrderDetails() {
 
                 style={{
 
-                    border:"1px solid #ddd",
+                    border: "1px solid #ddd",
 
-                    borderRadius:"12px",
+                    borderRadius: "12px",
 
-                    padding:"20px",
+                    padding: "20px",
 
-                    marginBottom:"30px"
+                    marginBottom: "30px"
 
                 }}
 
             >
+
 
 
 
@@ -304,9 +307,11 @@ export default function AdminOrderDetails() {
 
                 <p>
 
-                    {order.customer}
+                    {order.customer || "Unknown"}
 
                 </p>
+
+
 
 
 
@@ -340,6 +345,36 @@ export default function AdminOrderDetails() {
 
 
 
+
+                <h2>
+
+                    📦 Order Status
+
+                </h2>
+
+
+                <p>
+
+                    Status:
+
+                    {" "}
+
+                    <b>
+
+                        {order.status}
+
+                    </b>
+
+                </p>
+
+
+
+
+
+
+
+
+
                 <h2>
 
                     🚚 Delivery
@@ -359,6 +394,7 @@ export default function AdminOrderDetails() {
 
 
 
+
                 <p>
 
                     Address:
@@ -368,6 +404,7 @@ export default function AdminOrderDetails() {
                     {order.address || "Pickup"}
 
                 </p>
+
 
 
 
@@ -400,9 +437,10 @@ export default function AdminOrderDetails() {
 
 
 
+
                 {
 
-                    order.payment_status === "paid"
+                    order.payment_status?.toLowerCase() === "paid"
 
                     &&
 
@@ -410,6 +448,14 @@ export default function AdminOrderDetails() {
                     <button
 
                         onClick={downloadInvoice}
+
+                        style={{
+
+                            padding: "10px 15px",
+
+                            cursor: "pointer"
+
+                        }}
 
                     >
 
@@ -424,8 +470,8 @@ export default function AdminOrderDetails() {
 
 
 
-            </div>
 
+            </div>
 
 
 
@@ -452,7 +498,6 @@ export default function AdminOrderDetails() {
 
 
 
-
             {
 
                 order.items && order.items.length > 0 ?
@@ -460,7 +505,7 @@ export default function AdminOrderDetails() {
 
                 order.items.map(
 
-                    (item,index)=>(
+                    (item, index) => (
 
 
                         <div
@@ -469,13 +514,13 @@ export default function AdminOrderDetails() {
 
                             style={{
 
-                                border:"1px solid #ddd",
+                                border: "1px solid #ddd",
 
-                                borderRadius:"10px",
+                                borderRadius: "10px",
 
-                                padding:"15px",
+                                padding: "15px",
 
-                                marginBottom:"10px"
+                                marginBottom: "10px"
 
                             }}
 
@@ -495,6 +540,8 @@ export default function AdminOrderDetails() {
 
 
 
+
+
                             <p>
 
                                 Quantity:
@@ -504,6 +551,7 @@ export default function AdminOrderDetails() {
                                 {item.quantity}
 
                             </p>
+
 
 
 
@@ -559,11 +607,12 @@ export default function AdminOrderDetails() {
 
 
 
+
             <h2
 
                 style={{
 
-                    marginTop:"40px"
+                    marginTop: "40px"
 
                 }}
 
@@ -602,7 +651,7 @@ export default function AdminOrderDetails() {
 
                 history.map(
 
-                    (item,index)=>(
+                    (item, index) => (
 
 
                         <div
@@ -611,11 +660,11 @@ export default function AdminOrderDetails() {
 
                             style={{
 
-                                borderLeft:"4px solid #999",
+                                borderLeft: "4px solid #999",
 
-                                padding:"10px",
+                                padding: "10px",
 
-                                marginBottom:"10px"
+                                marginBottom: "10px"
 
                             }}
 
@@ -658,7 +707,7 @@ export default function AdminOrderDetails() {
 
                                 {" "}
 
-                                {item.changed_by}
+                                {item.changed_by || "System"}
 
                             </p>
 
@@ -693,6 +742,8 @@ export default function AdminOrderDetails() {
                 )
 
             }
+
+
 
 
 

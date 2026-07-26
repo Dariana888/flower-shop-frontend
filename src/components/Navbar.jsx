@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function Navbar() {
 
-
     const navigate = useNavigate();
-
 
     const [role, setRole] = useState(
         localStorage.getItem("role")
@@ -17,10 +15,9 @@ export default function Navbar() {
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
-
-        const update = ()=>{
+        const updateRole = () => {
 
             setRole(
                 localStorage.getItem("role")
@@ -31,44 +28,37 @@ export default function Navbar() {
 
         window.addEventListener(
             "storage",
-            update
+            updateRole
         );
 
 
-        return ()=>{
+        return () => {
 
             window.removeEventListener(
                 "storage",
-                update
+                updateRole
             );
 
         };
 
 
-    },[]);
+    }, []);
 
 
 
 
 
-    const logout = ()=>{
+    const logout = () => {
 
+        localStorage.removeItem("token");
 
-        localStorage.removeItem(
-            "token"
-        );
-
-
-        localStorage.removeItem(
-            "role"
-        );
+        localStorage.removeItem("role");
 
 
         setRole(null);
 
 
         navigate("/login");
-
 
     };
 
@@ -79,31 +69,20 @@ export default function Navbar() {
     return (
 
         <nav
-
             style={{
-
                 padding:"15px",
-
                 display:"flex",
-
                 gap:"20px",
-
                 alignItems:"center",
-
                 borderBottom:"1px solid #ddd",
-
                 background:"#fff"
-
             }}
-
         >
-
 
 
             <Link to="/">
                 🌸 Home
             </Link>
-
 
 
 
@@ -114,16 +93,24 @@ export default function Navbar() {
 
 
 
-            <Link to="/cart">
-                🛒 Cart
-            </Link>
+
+            {
+                token && role !== "admin" &&
+
+                <>
+
+                    <Link to="/cart">
+                        🛒 Cart
+                    </Link>
 
 
+                    <Link to="/my-orders">
+                        📦 My Orders
+                    </Link>
 
+                </>
 
-            <Link to="/orders">
-                📦 Orders
-            </Link>
+            }
 
 
 
@@ -135,19 +122,18 @@ export default function Navbar() {
                 <>
 
                     <Link to="/admin/dashboard">
-
                         📊 Dashboard
-
                     </Link>
-
 
 
                     <Link to="/admin/orders">
-
                         🛠 Admin Orders
-
                     </Link>
 
+
+                    <Link to="/admin/stock">
+                        📦 Stock
+                    </Link>
 
                 </>
 
@@ -158,9 +144,7 @@ export default function Navbar() {
 
 
             {
-
                 token ?
-
 
                 (
 
@@ -169,11 +153,8 @@ export default function Navbar() {
                         onClick={logout}
 
                         style={{
-
                             cursor:"pointer",
-
                             padding:"6px 12px"
-
                         }}
 
                     >
@@ -184,20 +165,15 @@ export default function Navbar() {
 
                 )
 
-
                 :
-
 
                 (
 
                     <Link to="/login">
-
                         Login
-
                     </Link>
 
                 )
-
 
             }
 
