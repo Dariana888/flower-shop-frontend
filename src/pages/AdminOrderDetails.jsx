@@ -23,11 +23,15 @@ export default function AdminOrderDetails() {
 
 
 
+
+
     useEffect(() => {
 
         loadOrder();
 
     }, [id]);
+
+
 
 
 
@@ -54,13 +58,7 @@ export default function AdminOrderDetails() {
             );
 
 
-
-            setOrder(
-
-                response.data
-
-            );
-
+            setOrder(response.data);
 
 
 
@@ -83,12 +81,7 @@ export default function AdminOrderDetails() {
                 );
 
 
-            } catch (error) {
-
-
-                console.log(
-                    "History not available"
-                );
+            } catch {
 
 
                 setHistory([]);
@@ -99,7 +92,7 @@ export default function AdminOrderDetails() {
 
 
 
-        } catch (error) {
+        } catch(error) {
 
 
             console.error(
@@ -116,10 +109,9 @@ export default function AdminOrderDetails() {
 
                 error.response?.data?.detail ||
 
-                "Order not found"
+                "Failed to load order"
 
             );
-
 
 
         } finally {
@@ -141,16 +133,97 @@ export default function AdminOrderDetails() {
 
 
 
-    const downloadInvoice = () => {
+    const downloadInvoice = async () => {
 
 
-        window.open(
+        try {
 
-            `${api.defaults.baseURL}/orders/${id}/invoice`,
 
-            "_blank"
+            const response = await api.get(
 
-        );
+                `/orders/${id}/invoice`,
+
+                {
+
+                    responseType:"blob"
+
+                }
+
+            );
+
+
+
+            const file = new Blob(
+
+                [response.data],
+
+                {
+
+                    type:"application/pdf"
+
+                }
+
+            );
+
+
+
+            const url = window.URL.createObjectURL(file);
+
+
+
+            const link = document.createElement("a");
+
+
+
+            link.href = url;
+
+
+
+            link.download =
+
+                `FlowerShop_invoice_${id}.pdf`;
+
+
+
+            document.body.appendChild(link);
+
+
+
+            link.click();
+
+
+
+            link.remove();
+
+
+
+            window.URL.revokeObjectURL(url);
+
+
+
+        } catch(error) {
+
+
+            console.error(
+
+                "INVOICE ERROR:",
+
+                error
+
+            );
+
+
+
+            alert(
+
+                error.response?.data?.detail ||
+
+                "Invoice download failed"
+
+            );
+
+
+        }
 
 
     };
@@ -163,12 +236,12 @@ export default function AdminOrderDetails() {
 
 
 
-    if (loading) {
+    if(loading){
 
 
         return (
 
-            <div style={{ padding: "30px" }}>
+            <div style={{padding:"30px"}}>
 
                 <h2>
                     Loading order...
@@ -188,18 +261,20 @@ export default function AdminOrderDetails() {
 
 
 
-    if (error) {
+    if(error){
 
 
         return (
 
-            <div style={{ padding: "30px" }}>
+            <div style={{padding:"30px"}}>
 
 
                 <button
 
                     onClick={() =>
+
                         navigate("/admin/orders")
+
                     }
 
                 >
@@ -210,7 +285,7 @@ export default function AdminOrderDetails() {
 
 
 
-                <h2>
+                <h2 style={{color:"red"}}>
 
                     ❌ {error}
 
@@ -221,10 +296,8 @@ export default function AdminOrderDetails() {
 
         );
 
+
     }
-
-
-
 
 
 
@@ -235,23 +308,15 @@ export default function AdminOrderDetails() {
 
     return (
 
-
-        <div
-
-            style={{
-
-                padding: "30px"
-
-            }}
-
-        >
-
+        <div style={{padding:"30px"}}>
 
 
             <button
 
                 onClick={() =>
+
                     navigate("/admin/orders")
+
                 }
 
             >
@@ -259,7 +324,6 @@ export default function AdminOrderDetails() {
                 ⬅ Back
 
             </button>
-
 
 
 
@@ -275,21 +339,17 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
-
             <div
 
                 style={{
 
-                    border: "1px solid #ddd",
+                    border:"1px solid #ddd",
 
-                    borderRadius: "12px",
+                    borderRadius:"12px",
 
-                    padding: "20px",
+                    padding:"20px",
 
-                    marginBottom: "30px"
+                    background:"#fff"
 
                 }}
 
@@ -298,16 +358,23 @@ export default function AdminOrderDetails() {
 
 
 
+
                 <h2>
-
                     👤 Customer
-
                 </h2>
 
 
                 <p>
 
-                    {order.customer || "Unknown"}
+                    {
+
+                        order.customer ||
+
+                        order.user_email ||
+
+                        "Unknown"
+
+                    }
 
                 </p>
 
@@ -315,14 +382,84 @@ export default function AdminOrderDetails() {
 
 
 
+                <h2>
+                    🚚 Delivery
+                </h2>
+
+
+                <p>
+
+                    Type:
+
+                    {" "}
+
+                    {order.delivery_type || "Pickup"}
+
+                </p>
+
+
+
+                <p>
+
+                    📍 Address:
+
+                    {" "}
+
+                    {order.address || "Pickup"}
+
+                </p>
+
+
+
+                <p>
+
+                    📏 Distance:
+
+                    {" "}
+
+                    {Number(order.delivery_distance || 0).toFixed(2)}
+
+                    km
+
+                </p>
+
+
+
+                <p>
+
+                    💵 Delivery price:
+
+                    {" "}
+
+                    {Number(order.delivery_price || 0).toFixed(2)}
+
+                    MDL
+
+                </p>
+
+
 
 
 
                 <h2>
-
-                    💰 Payment
-
+                    💳 Payment
                 </h2>
+
+
+                <p>
+
+                    Method:
+
+                    {" "}
+
+                    <b>
+
+                        {order.payment_method || "N/A"}
+
+                    </b>
+
+                </p>
+
 
 
                 <p>
@@ -343,21 +480,12 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
                 <h2>
-
-                    📦 Order Status
-
+                    📦 Status
                 </h2>
 
 
                 <p>
-
-                    Status:
-
-                    {" "}
 
                     <b>
 
@@ -371,76 +499,25 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
-
                 <h2>
-
-                    🚚 Delivery
-
-                </h2>
-
-
-                <p>
-
-                    Type:
-
-                    {" "}
-
-                    {order.delivery_type}
-
-                </p>
-
-
-
-
-                <p>
-
-                    Address:
-
-                    {" "}
-
-                    {order.address || "Pickup"}
-
-                </p>
-
-
-
-
-
-
-
-
-
-                <h2>
-
-                    💵 Total
-
+                    💰 Total
                 </h2>
 
 
                 <h3>
 
-                    {Number(order.total).toFixed(2)}
+                    {Number(order.total || 0).toFixed(2)}
 
-                    {" "}
-
-                    MDL
+                    {" MDL"}
 
                 </h3>
 
 
 
-
-
-
-
-
-
                 {
 
-                    order.payment_status?.toLowerCase() === "paid"
+
+                    order.payment_status === "paid"
 
                     &&
 
@@ -451,9 +528,17 @@ export default function AdminOrderDetails() {
 
                         style={{
 
-                            padding: "10px 15px",
+                            padding:"12px 20px",
 
-                            cursor: "pointer"
+                            background:"#4caf50",
+
+                            color:"white",
+
+                            border:"none",
+
+                            borderRadius:"8px",
+
+                            cursor:"pointer"
 
                         }}
 
@@ -468,9 +553,6 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
             </div>
 
 
@@ -481,10 +563,7 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
-            <h2>
+            <h2 style={{marginTop:"40px"}}>
 
                 🌸 Products
 
@@ -500,12 +579,16 @@ export default function AdminOrderDetails() {
 
             {
 
-                order.items && order.items.length > 0 ?
+
+                order.items && order.items.length > 0
+
+
+                ?
 
 
                 order.items.map(
 
-                    (item, index) => (
+                    (item,index)=>(
 
 
                         <div
@@ -514,13 +597,15 @@ export default function AdminOrderDetails() {
 
                             style={{
 
-                                border: "1px solid #ddd",
+                                border:"1px solid #ddd",
 
-                                borderRadius: "10px",
+                                borderRadius:"10px",
 
-                                padding: "15px",
+                                padding:"15px",
 
-                                marginBottom: "10px"
+                                marginBottom:"10px",
+
+                                background:"#fff"
 
                             }}
 
@@ -528,15 +613,21 @@ export default function AdminOrderDetails() {
 
 
 
-                            <p>
+                            <h3>
 
-                                🌺 Bouquet ID:
+                                🌸
 
                                 {" "}
 
-                                {item.bouquet_id}
+                                {
 
-                            </p>
+                                    item.name ||
+
+                                    `Bouquet #${item.bouquet_id}`
+
+                                }
+
+                            </h3>
 
 
 
@@ -562,11 +653,37 @@ export default function AdminOrderDetails() {
 
                                 {" "}
 
-                                {Number(item.price).toFixed(2)}
+                                {Number(item.price || 0).toFixed(2)}
+
+                                {" MDL"}
+
+                            </p>
+
+
+
+
+
+                            <p>
+
+                                Subtotal:
 
                                 {" "}
 
-                                MDL
+                                {
+
+                                    (
+
+                                        Number(item.price || 0) *
+
+                                        Number(item.quantity || 0)
+
+                                    )
+
+                                    .toFixed(2)
+
+                                }
+
+                                {" MDL"}
 
                             </p>
 
@@ -583,15 +700,11 @@ export default function AdminOrderDetails() {
                 :
 
 
-                (
+                <p>
 
-                    <p>
+                    No products found.
 
-                        No products found.
-
-                    </p>
-
-                )
+                </p>
 
 
             }
@@ -604,19 +717,7 @@ export default function AdminOrderDetails() {
 
 
 
-
-
-
-
-            <h2
-
-                style={{
-
-                    marginTop: "40px"
-
-                }}
-
-            >
+            <h2 style={{marginTop:"40px"}}>
 
                 📜 Status History
 
@@ -632,18 +733,18 @@ export default function AdminOrderDetails() {
 
             {
 
-                history.length === 0 ?
+
+                history.length === 0
 
 
-                (
+                ?
 
-                    <p>
 
-                        No history available.
+                <p>
 
-                    </p>
+                    No history available.
 
-                )
+                </p>
 
 
                 :
@@ -651,7 +752,7 @@ export default function AdminOrderDetails() {
 
                 history.map(
 
-                    (item, index) => (
+                    (item,index)=>(
 
 
                         <div
@@ -660,11 +761,13 @@ export default function AdminOrderDetails() {
 
                             style={{
 
-                                borderLeft: "4px solid #999",
+                                borderLeft:
 
-                                padding: "10px",
+                                "4px solid #999",
 
-                                marginBottom: "10px"
+                                padding:"10px",
+
+                                marginBottom:"10px"
 
                             }}
 
@@ -684,6 +787,7 @@ export default function AdminOrderDetails() {
                                 }
 
 
+
                                 {" ➜ "}
 
 
@@ -701,36 +805,50 @@ export default function AdminOrderDetails() {
 
 
 
+
                             <p>
 
                                 Changed by:
 
                                 {" "}
 
-                                {item.changed_by || "System"}
-
-                            </p>
-
-
-
-
-
-                            <p>
-
                                 {
 
-                                    item.changed_at &&
+                                    item.changed_by ||
 
-                                    new Date(
-
-                                        item.changed_at
-
-                                    ).toLocaleString()
+                                    "System"
 
                                 }
 
                             </p>
 
+
+
+
+
+
+                            {
+
+                                item.changed_at &&
+
+
+                                <p>
+
+                                    {
+
+                                        new Date(
+
+                                            item.changed_at
+
+                                        )
+
+                                        .toLocaleString()
+
+                                    }
+
+                                </p>
+
+                            }
 
 
 
@@ -741,8 +859,8 @@ export default function AdminOrderDetails() {
 
                 )
 
-            }
 
+            }
 
 
 

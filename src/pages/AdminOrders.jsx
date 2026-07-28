@@ -31,9 +31,7 @@ export default function AdminOrders() {
 
     const loadOrders = async () => {
 
-
         try {
-
 
             const response = await api.get(
                 "/admin/orders"
@@ -43,9 +41,7 @@ export default function AdminOrders() {
             setOrders(response.data);
 
 
-
         } catch(error) {
-
 
             console.error(
                 "ADMIN ORDERS ERROR:",
@@ -55,14 +51,11 @@ export default function AdminOrders() {
 
         } finally {
 
-
             setLoading(false);
-
 
         }
 
     };
-
 
 
 
@@ -119,6 +112,7 @@ export default function AdminOrders() {
 
 
         }
+
 
     };
 
@@ -219,7 +213,6 @@ export default function AdminOrders() {
             );
 
 
-
             loadOrders();
 
 
@@ -228,6 +221,7 @@ export default function AdminOrders() {
 
 
             console.error(error);
+
 
 
             alert(
@@ -250,16 +244,99 @@ export default function AdminOrders() {
 
 
 
-    const downloadInvoice = (id)=>{
+    const downloadInvoice = async (id) => {
 
 
-        window.open(
+        try {
 
-            `${api.defaults.baseURL}/orders/${id}/invoice`,
 
-            "_blank"
+            const response = await api.get(
 
-        );
+                `/orders/${id}/invoice`,
+
+                {
+
+                    responseType:"blob"
+
+                }
+
+            );
+
+
+
+            const file = new Blob(
+
+                [response.data],
+
+                {
+
+                    type:"application/pdf"
+
+                }
+
+            );
+
+
+
+            const url = window.URL.createObjectURL(file);
+
+
+
+            const link = document.createElement("a");
+
+
+
+            link.href = url;
+
+
+
+            link.download =
+
+                `FlowerShop_invoice_${id}.pdf`;
+
+
+
+            document.body.appendChild(link);
+
+
+
+            link.click();
+
+
+
+            link.remove();
+
+
+
+            window.URL.revokeObjectURL(url);
+
+
+
+        }
+
+        catch(error){
+
+
+            console.error(
+
+                "INVOICE ERROR:",
+
+                error
+
+            );
+
+
+
+            alert(
+
+                error.response?.data?.detail ||
+
+                "Cannot download invoice"
+
+            );
+
+
+        }
 
 
     };
@@ -287,7 +364,6 @@ export default function AdminOrders() {
 
         );
 
-
     }
 
 
@@ -311,16 +387,11 @@ export default function AdminOrders() {
         >
 
 
-
             <h1>
                 🛠 Admin Orders
             </h1>
-
-
-
-
-
             {
+
                 orders.length === 0 ?
 
 
@@ -338,7 +409,6 @@ export default function AdminOrders() {
 
 
                 orders.map(order => (
-
 
 
                     <div
@@ -364,9 +434,7 @@ export default function AdminOrders() {
 
 
                         <h2>
-
                             📦 Order #{order.id}
-
                         </h2>
 
 
@@ -379,7 +447,7 @@ export default function AdminOrders() {
 
                             {" "}
 
-                            {order.user_email}
+                            {order.user_email || "Unknown"}
 
                         </p>
 
@@ -393,7 +461,7 @@ export default function AdminOrders() {
 
                             {" "}
 
-                            {order.total.toFixed(2)}
+                            {Number(order.total || 0).toFixed(2)}
 
                             {" "}
 
@@ -411,7 +479,53 @@ export default function AdminOrders() {
 
                             {" "}
 
-                            {order.delivery_type}
+                            {order.delivery_type || "Pickup"}
+
+                        </p>
+
+
+
+
+
+                        <p>
+
+                            📏 Distance:
+
+                            {" "}
+
+                            {Number(order.delivery_distance || 0).toFixed(2)}
+
+                            km
+
+                        </p>
+
+
+
+
+
+                        <p>
+
+                            💵 Delivery price:
+
+                            {" "}
+
+                            {Number(order.delivery_price || 0).toFixed(2)}
+
+                            MDL
+
+                        </p>
+
+
+
+
+
+                        <p>
+
+                            💳 Payment method:
+
+                            {" "}
+
+                            {order.payment_method || "N/A"}
 
                         </p>
 
@@ -440,13 +554,20 @@ export default function AdminOrders() {
                             {" "}
 
                             {
+
                                 new Date(
+
                                     order.created_at
+
                                 )
+
                                 .toLocaleString()
+
                             }
 
                         </p>
+
+
 
 
 
@@ -494,6 +615,8 @@ export default function AdminOrders() {
 
 
 
+
+
                         <p>
 
                             Status:
@@ -503,29 +626,31 @@ export default function AdminOrders() {
 
                             <b
 
-                            style={{
+                                style={{
 
-                                color:
 
-                                order.status==="completed"
+                                    color:
 
-                                ?
+                                    order.status === "completed"
 
-                                "green"
+                                    ?
 
-                                :
+                                    "green"
 
-                                order.status==="cancelled"
+                                    :
 
-                                ?
+                                    order.status === "cancelled"
 
-                                "red"
+                                    ?
 
-                                :
+                                    "red"
 
-                                "orange"
+                                    :
 
-                            }}
+                                    "orange"
+
+
+                                }}
 
                             >
 
@@ -544,7 +669,6 @@ export default function AdminOrders() {
 
 
 
-
                         <select
 
 
@@ -553,6 +677,7 @@ export default function AdminOrders() {
 
                             onChange={(e)=>
 
+
                                 updateStatus(
 
                                     order.id,
@@ -560,6 +685,7 @@ export default function AdminOrders() {
                                     e.target.value
 
                                 )
+
 
                             }
 
@@ -619,6 +745,7 @@ export default function AdminOrders() {
 
                             onChange={(e)=>
 
+
                                 updatePayment(
 
                                     order.id,
@@ -626,6 +753,7 @@ export default function AdminOrders() {
                                     e.target.value
 
                                 )
+
 
                             }
 
@@ -681,6 +809,7 @@ export default function AdminOrders() {
 
                         <button
 
+
                             onClick={()=>
 
 
@@ -693,11 +822,15 @@ export default function AdminOrders() {
 
                             }
 
+
                             style={{
 
-                                marginRight:"10px"
+                                marginRight:"10px",
+
+                                padding:"10px"
 
                             }}
+
 
                         >
 
@@ -711,47 +844,56 @@ export default function AdminOrders() {
 
 
 
+
+
                         {
 
 
-                        order.payment_status === "paid"
+                            order.payment_status === "paid"
 
-                        &&
-
-                        (
-
-                            <button
-
-                                onClick={()=>
+                            &&
 
 
-                                    downloadInvoice(
+                            (
 
-                                        order.id
-
-                                    )
+                                <button
 
 
-                                }
-
-                                style={{
-
-                                    marginRight:"10px"
-
-                                }}
-
-                            >
-
-                                📄 Invoice
-
-                            </button>
+                                    onClick={()=>
 
 
-                        )
+                                        downloadInvoice(
+
+                                            order.id
+
+                                        )
+
+
+                                    }
+
+
+                                    style={{
+
+                                        marginRight:"10px",
+
+                                        padding:"10px",
+
+                                        cursor:"pointer"
+
+                                    }}
+
+
+                                >
+
+                                    📄 Invoice
+
+                                </button>
+
+
+                            )
 
 
                         }
-
 
 
 
@@ -779,6 +921,7 @@ export default function AdminOrders() {
 
                             style={{
 
+
                                 background:"crimson",
 
                                 color:"white",
@@ -787,7 +930,10 @@ export default function AdminOrders() {
 
                                 padding:"10px 15px",
 
-                                borderRadius:"8px"
+                                borderRadius:"8px",
+
+                                cursor:"pointer"
+
 
                             }}
 
@@ -805,7 +951,6 @@ export default function AdminOrders() {
                     </div>
 
 
-
                 ))
 
             }
@@ -817,6 +962,5 @@ export default function AdminOrders() {
         </div>
 
     );
-
 
 }

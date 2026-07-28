@@ -11,11 +11,18 @@ export default function AdminDashboard() {
 
 
 
+
+
+
+
     useEffect(() => {
 
         loadDashboard();
 
     }, []);
+
+
+
 
 
 
@@ -43,10 +50,12 @@ export default function AdminDashboard() {
             );
 
 
+
         } finally {
 
 
             setLoading(false);
+
 
         }
 
@@ -56,7 +65,9 @@ export default function AdminDashboard() {
 
 
 
-    if (loading) {
+
+
+    if(loading){
 
         return (
 
@@ -76,7 +87,9 @@ export default function AdminDashboard() {
 
 
 
-    if (!data) {
+
+
+    if(!data){
 
         return (
 
@@ -96,7 +109,11 @@ export default function AdminDashboard() {
 
 
 
-    const summary = data.summary;
+
+
+    const summary = data.summary || {};
+
+
 
 
 
@@ -105,15 +122,26 @@ export default function AdminDashboard() {
     return (
 
         <div
+
             style={{
+
                 padding:"30px"
+
             }}
+
         >
 
 
             <h1>
+
                 📊 Admin Dashboard
+
             </h1>
+
+
+
+
+
 
 
 
@@ -137,60 +165,65 @@ export default function AdminDashboard() {
 
                 <Card
                     title="📦 Total Orders"
-                    value={summary.total_orders}
+                    value={summary.total_orders || 0}
                 />
 
 
 
                 <Card
                     title="💰 Revenue"
-                    value={`${summary.revenue.toFixed(2)} MDL`}
+                    value={`${Number(summary.revenue || 0).toFixed(2)} MDL`}
                 />
 
 
 
                 <Card
                     title="💳 Paid"
-                    value={summary.paid_orders}
+                    value={summary.paid_orders || 0}
                 />
 
 
 
                 <Card
                     title="⏳ Pending"
-                    value={summary.pending}
+                    value={summary.pending || 0}
                 />
 
 
 
                 <Card
                     title="🔄 Processing"
-                    value={summary.processing}
+                    value={summary.processing || 0}
                 />
 
 
 
                 <Card
                     title="🚚 Shipped"
-                    value={summary.shipped}
+                    value={summary.shipped || 0}
                 />
 
 
 
                 <Card
                     title="✅ Completed"
-                    value={summary.completed}
+                    value={summary.completed || 0}
                 />
 
 
 
                 <Card
                     title="❌ Cancelled"
-                    value={summary.cancelled}
+                    value={summary.cancelled || 0}
                 />
 
 
+
             </div>
+
+
+
+
 
 
 
@@ -203,7 +236,13 @@ export default function AdminDashboard() {
             </h2>
 
 
+
+
+
+
             {
+
+                !data.top_products ||
 
                 data.top_products.length === 0 ?
 
@@ -219,38 +258,51 @@ export default function AdminDashboard() {
 
                 :
 
-                (
 
-                    data.top_products.map(
-                        (product,index)=>(
+                data.top_products.map(
 
-                            <div
-                                key={index}
-                                style={{
-                                    border:"1px solid #ddd",
-                                    padding:"10px",
-                                    marginBottom:"10px",
-                                    borderRadius:"8px"
-                                }}
-                            >
+                    (product,index)=>(
 
-                                {product.name}
 
-                                {" - "}
+                        <div
 
-                                Sold:
-                                {" "}
-                                {product.sold}
+                            key={index}
 
-                            </div>
+                            style={{
 
-                        )
+                                border:"1px solid #ddd",
+
+                                padding:"10px",
+
+                                marginBottom:"10px",
+
+                                borderRadius:"8px",
+
+                                background:"#fff"
+
+                            }}
+
+                        >
+
+                            🌸 {product.name}
+
+                            {" - Sold: "}
+
+                            {product.sold}
+
+
+                        </div>
+
 
                     )
 
                 )
 
             }
+
+
+
+
 
 
 
@@ -264,7 +316,13 @@ export default function AdminDashboard() {
 
 
 
+
+
+
+
             {
+
+                !data.low_stock ||
 
                 data.low_stock.length === 0 ?
 
@@ -280,34 +338,41 @@ export default function AdminDashboard() {
 
                 :
 
-                (
 
-                    data.low_stock.map(
-                        (item)=>(
+                data.low_stock.map(
 
-                            <div
-
-                                key={item.id}
-
-                                style={{
-                                    border:"1px solid #ddd",
-                                    padding:"10px",
-                                    marginBottom:"10px",
-                                    borderRadius:"8px"
-                                }}
-
-                            >
-
-                                🌸 {item.name}
-
-                                {" - Stock: "}
-
-                                {item.stock}
+                    (item)=>(
 
 
-                            </div>
+                        <div
 
-                        )
+                            key={item.id}
+
+                            style={{
+
+                                border:"1px solid #ddd",
+
+                                padding:"10px",
+
+                                marginBottom:"10px",
+
+                                borderRadius:"8px",
+
+                                background:"#fff"
+
+                            }}
+
+                        >
+
+                            🌸 {item.name}
+
+                            {" - Stock: "}
+
+                            {item.stock}
+
+
+                        </div>
+
 
                     )
 
@@ -317,11 +382,19 @@ export default function AdminDashboard() {
 
 
 
+
+
+
+
         </div>
 
     );
 
 }
+
+
+
+
 
 
 
@@ -351,12 +424,16 @@ function Card({title,value}) {
         >
 
             <h3>
+
                 {title}
+
             </h3>
 
 
             <h2>
+
                 {value}
+
             </h2>
 
 

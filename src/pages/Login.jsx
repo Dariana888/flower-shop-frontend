@@ -5,73 +5,106 @@ import api from "../api/api";
 
 export default function Login() {
 
+
     const navigate = useNavigate();
 
 
     const [email, setEmail] = useState("");
+
     const [password, setPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
 
+    const [error, setError] = useState("");
+
+
+
+
+
 
 
     const login = async (e) => {
+
 
         e.preventDefault();
 
 
         try {
 
+
             setLoading(true);
 
-
-            const response = await api.post("/login", {
-
-                email: email,
-
-                password: password
-
-            });
+            setError("");
 
 
 
-            // SAVE TOKEN
+            const response = await api.post(
+
+                "/login",
+
+                {
+
+                    email,
+
+                    password
+
+                }
+
+            );
+
+
+
+
 
             localStorage.setItem(
+
                 "token",
+
                 response.data.access_token
+
             );
 
 
 
-            // SAVE USER ROLE
+
 
             localStorage.setItem(
+
                 "role",
+
                 response.data.role || "user"
+
             );
 
 
 
-            alert("Login successful");
 
 
             navigate("/");
 
 
 
-        } catch (error) {
 
 
-            console.log(
+        } catch(error) {
+
+
+            console.error(
+
                 "Login error:",
+
                 error
+
             );
 
 
-            alert(
+
+            setError(
+
                 error.response?.data?.detail ||
+
                 "Login failed"
+
             );
 
 
@@ -84,29 +117,81 @@ export default function Login() {
 
         }
 
+
     };
+
+
+
+
+
 
 
 
 
     return (
 
+
         <div
 
+
             style={{
+
+
                 width:"350px",
+
                 margin:"80px auto",
+
                 padding:"30px",
+
                 border:"1px solid #ddd",
-                borderRadius:"10px"
+
+                borderRadius:"10px",
+
+                background:"#fff"
+
+
             }}
+
 
         >
 
 
+
             <h2>
+
                 🌸 Flower Shop Login
+
             </h2>
+
+
+
+
+
+
+            {
+
+                error &&
+
+
+                <p
+
+                    style={{
+
+                        color:"red"
+
+                    }}
+
+                >
+
+                    {error}
+
+                </p>
+
+
+            }
+
+
+
 
 
 
@@ -114,28 +199,45 @@ export default function Login() {
             <form onSubmit={login}>
 
 
-
                 <input
+
 
                     type="email"
 
+
                     placeholder="Email"
+
 
                     value={email}
 
+
                     onChange={(e)=>
+
                         setEmail(e.target.value)
+
                     }
 
+
                     style={{
+
+
                         width:"100%",
+
                         padding:"10px",
+
                         marginBottom:"15px"
+
+
                     }}
+
 
                     required
 
+
                 />
+
+
+
 
 
 
@@ -143,25 +245,44 @@ export default function Login() {
 
                 <input
 
+
                     type="password"
+
 
                     placeholder="Password"
 
+
                     value={password}
 
+
                     onChange={(e)=>
+
                         setPassword(e.target.value)
+
                     }
 
+
                     style={{
+
+
                         width:"100%",
+
                         padding:"10px",
+
                         marginBottom:"15px"
+
+
                     }}
+
 
                     required
 
+
                 />
+
+
+
+
 
 
 
@@ -169,22 +290,41 @@ export default function Login() {
 
                 <button
 
+
                     type="submit"
+
 
                     disabled={loading}
 
+
                     style={{
+
+
                         width:"100%",
+
                         padding:"10px",
+
                         cursor:"pointer"
+
+
                     }}
+
 
                 >
 
+
                     {
+
                         loading
-                        ? "Loading..."
-                        : "Login"
+
+                        ?
+
+                        "Loading..."
+
+                        :
+
+                        "Login"
+
                     }
 
 
@@ -192,11 +332,16 @@ export default function Login() {
 
 
 
+
+
             </form>
 
 
 
+
+
         </div>
+
 
     );
 

@@ -4,13 +4,13 @@ import {
     Route
 } from "react-router-dom";
 
-
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
-
+// =====================
 // PUBLIC PAGES
+// =====================
 
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -21,25 +21,31 @@ import Checkout from "./pages/Checkout";
 
 
 
+// =====================
 // USER PAGES
+// =====================
 
 import Orders from "./pages/Orders";
 import MyOrders from "./pages/MyOrders";
+import OrderDetails from "./pages/OrderDetails";
 
 
 
+// =====================
 // ADMIN PAGES
+// =====================
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminOrders from "./pages/AdminOrders";
 import AdminOrderDetails from "./pages/AdminOrderDetails";
 import AdminStock from "./pages/AdminStock";
+import AdminBouquets from "./pages/AdminBouquets";
 
 
 
 
 
-export default function App(){
+export default function App() {
 
 
     return (
@@ -51,7 +57,10 @@ export default function App(){
             <Navbar />
 
 
+
             <Routes>
+
+
 
 
 
@@ -60,34 +69,57 @@ export default function App(){
                 ====================== */}
 
 
+
                 <Route
+
                     path="/"
+
                     element={<Home />}
+
                 />
 
 
+
                 <Route
+
                     path="/products"
+
                     element={<Products />}
+
                 />
 
 
+
                 <Route
+
                     path="/cart"
+
                     element={<Cart />}
+
                 />
 
 
+
                 <Route
+
                     path="/login"
+
                     element={<Login />}
+
                 />
+
 
 
                 <Route
+
                     path="/register"
+
                     element={<Register />}
+
                 />
+
+
+
 
 
 
@@ -95,6 +127,7 @@ export default function App(){
                 {/* =====================
                     CHECKOUT
                 ====================== */}
+
 
 
                 <Route
@@ -112,6 +145,8 @@ export default function App(){
                     }
 
                 />
+
+
 
 
 
@@ -143,6 +178,7 @@ export default function App(){
 
 
 
+
                 <Route
 
                     path="/my-orders"
@@ -162,6 +198,25 @@ export default function App(){
 
 
 
+                <Route
+
+                    path="/orders/:id"
+
+                    element={
+
+                        <ProtectedRoute>
+
+                            <OrderDetails />
+
+                        </ProtectedRoute>
+
+                    }
+
+                />
+
+
+
+
 
 
 
@@ -170,7 +225,6 @@ export default function App(){
                 {/* =====================
                     ADMIN
                 ====================== */}
-
 
 
 
@@ -255,6 +309,27 @@ export default function App(){
 
 
 
+                <Route
+
+                    path="/admin/bouquets"
+
+                    element={
+
+                        <ProtectedRoute role="admin">
+
+                            <AdminBouquets />
+
+                        </ProtectedRoute>
+
+                    }
+
+                />
+
+
+
+
+
+
 
 
 
@@ -274,16 +349,21 @@ export default function App(){
 
                             style={{
 
-                                padding:"30px"
+                                padding:"30px",
+
+                                textAlign:"center"
 
                             }}
 
                         >
 
+                            <h1>
+                                404
+                            </h1>
+
+
                             <h2>
-
                                 ❌ Page not found
-
                             </h2>
 
 
@@ -295,12 +375,16 @@ export default function App(){
 
 
 
+
+
             </Routes>
+
 
 
         </BrowserRouter>
 
 
     );
+
 
 }

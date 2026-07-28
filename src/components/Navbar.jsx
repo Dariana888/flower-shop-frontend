@@ -4,40 +4,58 @@ import { useState, useEffect } from "react";
 
 export default function Navbar() {
 
+
     const navigate = useNavigate();
 
-    const [role, setRole] = useState(
-        localStorage.getItem("role")
-    );
+
+    const [role, setRole] = useState(null);
+
+    const [token, setToken] = useState(null);
 
 
-    const token = localStorage.getItem("token");
+
 
 
 
     useEffect(() => {
 
-        const updateRole = () => {
+
+        const updateAuth = () => {
+
+
+            setToken(
+                localStorage.getItem("token")
+            );
+
 
             setRole(
                 localStorage.getItem("role")
             );
 
+
         };
+
+
+
+        updateAuth();
+
 
 
         window.addEventListener(
             "storage",
-            updateRole
+            updateAuth
         );
+
 
 
         return () => {
 
+
             window.removeEventListener(
                 "storage",
-                updateRole
+                updateAuth
             );
+
 
         };
 
@@ -48,17 +66,31 @@ export default function Navbar() {
 
 
 
+
+
+
+
     const logout = () => {
 
-        localStorage.removeItem("token");
 
-        localStorage.removeItem("role");
+        localStorage.removeItem(
+            "token"
+        );
 
+
+        localStorage.removeItem(
+            "role"
+        );
+
+
+        setToken(null);
 
         setRole(null);
 
 
+
         navigate("/login");
+
 
     };
 
@@ -66,51 +98,94 @@ export default function Navbar() {
 
 
 
+
+
+
+
     return (
 
+
         <nav
+
             style={{
+
                 padding:"15px",
+
                 display:"flex",
+
                 gap:"20px",
+
                 alignItems:"center",
+
                 borderBottom:"1px solid #ddd",
+
                 background:"#fff"
+
             }}
+
         >
 
 
+
+
+
             <Link to="/">
+
                 🌸 Home
+
             </Link>
+
+
+
 
 
 
             <Link to="/products">
+
                 🌺 Products
+
             </Link>
+
+
 
 
 
 
 
             {
-                token && role !== "admin" &&
+                token &&
 
                 <>
 
                     <Link to="/cart">
+
                         🛒 Cart
+
                     </Link>
 
 
-                    <Link to="/my-orders">
-                        📦 My Orders
-                    </Link>
+
+
+
+                    {
+                        role !== "admin" &&
+
+                        <Link to="/my-orders">
+
+                            📦 My Orders
+
+                        </Link>
+                    }
+
+
 
                 </>
 
             }
+
+
+
+
 
 
 
@@ -121,23 +196,54 @@ export default function Navbar() {
 
                 <>
 
+
                     <Link to="/admin/dashboard">
+
                         📊 Dashboard
+
                     </Link>
+
+
+
 
 
                     <Link to="/admin/orders">
+
                         🛠 Admin Orders
+
                     </Link>
+
+
+
 
 
                     <Link to="/admin/stock">
+
                         📦 Stock
+
                     </Link>
+
+
+
+
+
+                    <Link to="/admin/bouquets">
+
+                        🌺 Bouquets
+
+                    </Link>
+
+
+
 
                 </>
 
+
             }
+
+
+
+
 
 
 
@@ -146,15 +252,21 @@ export default function Navbar() {
             {
                 token ?
 
+
                 (
 
                     <button
 
+
                         onClick={logout}
 
+
                         style={{
+
                             cursor:"pointer",
+
                             padding:"6px 12px"
+
                         }}
 
                     >
@@ -163,24 +275,36 @@ export default function Navbar() {
 
                     </button>
 
+
                 )
 
+
                 :
+
 
                 (
 
                     <Link to="/login">
+
                         Login
+
                     </Link>
 
+
                 )
+
 
             }
 
 
 
+
+
+
         </nav>
 
+
     );
+
 
 }
